@@ -1,28 +1,23 @@
 import React, { useRef, useState } from 'react';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../lib/contexts/AuthContext';
 
 export default function Signup() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const passwordConfirmRef = useRef(null);
-  const { signup } = useAuth();
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+
+  const { loading, setLoading, signUpWithEmailAndPassword } = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      setLoading(false);
       return setError('Password not match');
     }
-    try {
-      setError('');
-      setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
-    } catch {
-      setError('Failed to create an account');
-    }
-    setLoading(false);
+    
+    signUpWithEmailAndPassword(emailRef.current.value, passwordRef.current.value);
   }
 
   return (
